@@ -2,11 +2,8 @@ from __future__ import division, unicode_literals
 from bs4 import BeautifulSoup
 import requests
 import codecs
-import nltk
 from nltk.tokenize import word_tokenize
-from nltk import tokenize
 import re
-import string
 
 
 def link_to_html(url, fname):
@@ -26,7 +23,9 @@ def link_to_html(url, fname):
 def clean_html(fname):  
     f=codecs.open(fname, 'r', 'utf-8')
     document = BeautifulSoup(f.read(),features = "lxml").get_text()
+    # return document #if don't want preprocessing
 
+    # #Preprocessing
     docwords=word_tokenize(document)
 
     st = ""
