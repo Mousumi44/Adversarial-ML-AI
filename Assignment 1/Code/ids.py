@@ -16,7 +16,7 @@ outputstr = ''
 printedNode = []
 urlStack = []
 
-f = open("demofile.txt", "a")
+f = open("demofile.txt", "w")
 
 def push(nodeNumber, urlStack):
     urlStack.insert(0, nodeNumber)
@@ -49,7 +49,8 @@ def graphPrintids():
     nonum = get(urlStack)
     for elem in range(0, len(urlgraph)):
         if urlgraph[elem][0] == nonum:
-            print(urlgraph[elem])
+            #print(urlgraph[elem][1])
+            f.write(urlgraph[elem][1]+'\n')
             #outputstr += str(urlgraph[elem]) + '\n'
 
             ### HTML extract as File Here with Feature Vector
@@ -69,8 +70,10 @@ def graphPrintids():
 
 
 if __name__ == "__main__":
-    maxDepth = 3
-    userURL = "http://www.google.com"
+    maxDepth = 1
+    userURL = "http://auburn.edu/"
+
+    
     http = httplib2.Http()
     status, response = http.request(userURL)
 
@@ -91,3 +94,4 @@ if __name__ == "__main__":
     graphPrintids()
     #f.write(outputstr)
     #f.close()
+
