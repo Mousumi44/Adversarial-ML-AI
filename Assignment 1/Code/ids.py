@@ -48,6 +48,7 @@ def graphPrintids():
     repeatedNodeFound = 0
     for elem in range(0, len(urlgraph)):
         if urlgraph[elem][0] == nonum:
+
             if urlgraph[elem][1] not in printedNode:
                 print(urlgraph[elem])
                 printedNode.append(urlgraph[elem][1])
@@ -55,6 +56,7 @@ def graphPrintids():
                 ######################
             else:
                 repeatedNodeFound = 1
+
             urlStack.pop(0)
 
     if repeatedNodeFound == 0:
@@ -89,5 +91,5 @@ if __name__ == "__main__":
     graphGenerate(node)
     nodeNumber = 0
     push(nodeNumber, urlStack)
-
     graphPrintids()
+
