@@ -4,19 +4,16 @@
 from bs4 import BeautifulSoup, SoupStrainer
 import httplib2
 from collections import defaultdict
-import numpy as np
 import sys
 sys.setrecursionlimit(100000)
 
 global maxDepth
 global userURL
-nodeNumber = 0
 global node
+nodeNumber = 0
 outputstr = ''
 printedNode = []
 urlStack = []
-
-f = open("demofile.txt", "a")
 
 def push(nodeNumber, urlStack):
     urlStack.insert(0, nodeNumber)
@@ -24,6 +21,7 @@ def push(nodeNumber, urlStack):
 def get(urlStack):
     return urlStack[0]
 
+#node = [nodeNumber, nodeURL, childNodeIndex, parentNodeIndex, depth]
 
 def graphGenerate(node):
     global nodeNumber
@@ -38,56 +36,58 @@ def graphGenerate(node):
             childIndex = childIndex+1
             graphGenerate([nodeNumber, link['href'], childIndex, node[0], node[4]+1])
 
-#node = [nodeNumber, nodeURL, childNodeIndex, parentNodeIndex, depth]
 
 def graphPrintids():
     global outputstr
+    global printedNode
 
     if len(urlStack) == 0:
         print("[]")
         return
-    nonum = get(urlStack)
+    nonum = get(urlStack) #first element from urlStack
+    repeatedNodeFound = 0
     for elem in range(0, len(urlgraph)):
         if urlgraph[elem][0] == nonum:
-            print(urlgraph[elem])
-            #outputstr += str(urlgraph[elem]) + '\n'
-
-            ### HTML extract as File Here with Feature Vector
-
-
-
-            ######################
-
-
+            if urlgraph[elem][1] not in printedNode:
+                print(urlgraph[elem])
+                printedNode.append(urlgraph[elem][1])
+                ### HTML extract as File Here with Feature Vector
+                ######################
+            else:
+                repeatedNodeFound = 1
             urlStack.pop(0)
-    for elem in range(len(urlgraph)-1, 0, -1):
-        if urlgraph[elem][3] == nonum:
-            push(urlgraph[elem][0], urlStack)
+
+    if repeatedNodeFound == 0:
+        for elem in range(len(urlgraph)-1, 0, -1):
+            if urlgraph[elem][3] == nonum:
+                if urlgraph[elem][1] not in printedNode:
+                    push(urlgraph[elem][0], urlStack)
 
     graphPrintids()
 
 
 
 if __name__ == "__main__":
-    maxDepth = 3
-    userURL = "http://www.google.com"
+    maxDepth = 2
+    userURL = "http://www.auburn.edu"
+
+    maxDepth = int(input("Enter max depth: "))
+    userURL = input("Enter URL: ")
+
     http = httplib2.Http()
     status, response = http.request(userURL)
 
     
     urlgraph = []
-    visitedlinks = set()
     nodeNumber = 0
     nodeURL = userURL
     childNodeIndex = 0
     parentNodeIndex = -1
     depth = 0
+    printedNode = []
     node = [nodeNumber, nodeURL, childNodeIndex, parentNodeIndex, depth]
     graphGenerate(node)
     nodeNumber = 0
     push(nodeNumber, urlStack)
-    #graphPrint(urlgraph)
-    #print(urlgraph)
+
     graphPrintids()
-    #f.write(outputstr)
-    #f.close()
