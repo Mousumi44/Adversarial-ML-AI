@@ -50,7 +50,7 @@ def graphPrintids():
         if urlgraph[elem][0] == nonum:
 
             if urlgraph[elem][1] not in printedNode:
-                print(urlgraph[elem])
+                # print(urlgraph[elem])
                 printedNode.append(urlgraph[elem][1])
                 ### HTML extract as File Here with Feature Vector
                 ######################
@@ -70,8 +70,8 @@ def graphPrintids():
 
 
 if __name__ == "__main__":
-    maxDepth = 2
-    userURL = "http://www.auburn.edu"
+
+    f = open("demofile.txt", "w")
 
     maxDepth = int(input("Enter max depth: "))
     userURL = input("Enter URL: ")
@@ -92,4 +92,7 @@ if __name__ == "__main__":
     nodeNumber = 0
     push(nodeNumber, urlStack)
     graphPrintids()
+
+    for i in range(len(printedNode)):
+        f.write(printedNode[i]+'\n')    
 
