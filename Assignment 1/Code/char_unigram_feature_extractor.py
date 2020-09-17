@@ -7,6 +7,7 @@ from nltk import tokenize
 import re
 import os.path
 import shutil
+from collections import Counter
 
 
 def link_to_html(url, fname):
@@ -29,31 +30,33 @@ def clean_html(fname):
     fname = os.path.join('./HTML_FILE/', fname)  
     f=codecs.open(fname, 'r', 'utf-8')
     document = BeautifulSoup(f.read(),features = "lxml").get_text()
-    # return document #if don't want preprocessing
+    return document #if don't want preprocessing
 
     # Preprocessing
-    docwords=word_tokenize(document)
+    # docwords=word_tokenize(document)
 
-    st = ""
-    for line in docwords:
-        line = (line.rstrip())
-        if line and re.match("^[A-Za-z]*$",line) and len(line)>1:
-            st=st+""+line
-    return st
+    # st = ""
+    # for line in docwords:
+    #     line = (line.rstrip())
+    #     if line and re.match("^[A-Za-z]*$",line) and len(line)>1:
+    #         st=st+""+line
+    # return st
 
 def char_unigram_feature(st):
     """
     st: clean html , type: str
     return dictionary of character count
     """
-    dic = {}
-    for l in st:
-        try:
-            dic[l] +=1
-        except KeyError:
-            dic[l] = 1
+    frequency = sorted(Counter(c for l in st for c in l).items())
+    return frequency
+    # dic = {}
+    # for l in st:
+    #     try:
+    #         dic[l] +=1
+    #     except KeyError:
+    #         dic[l] = 1
 
-    return dic
+    # return dic
 
 if __name__ == '__main__':
 
