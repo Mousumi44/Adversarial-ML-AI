@@ -201,17 +201,8 @@ for run in range(maxRun):
         if (i % PopSize == 0):
             if (plot == 1):
                 simple_steadystate_ga.plot_evolved_candidate_solutions()
-            #print("At Iteration: " + str(i))
-            # simple_steadystate_ga.print_population()
-        # if (simple_steadystate_ga.get_best_fitness() > 0.997544): #= 0.9975438): #
-        #     break
 
-    # print("\nFinal Population\n")
-    # simple_steadystate_ga.print_population()
     simple_steadystate_ga.print_best_max_fitness()
-    # print('\n')
-    # print("Function Evaluations: " + str(PopSize+i))
-    # simple_steadystate_ga.plot_evolved_candidate_solutions()
 np_fitnessAllRuns = np.array(fitnessAllRuns)
 
 f.write('\nBest individual in each run - ')
