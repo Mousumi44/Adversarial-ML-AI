@@ -23,7 +23,12 @@ class anIndividual:
         self.fitness    = 0
         self.chromosome_length = specified_chromosome_length
         self.method = method
-        
+
+    def assignZero(self):
+        for i in range(self.chromosome_length):
+            self.chromosome.append(0)
+        self.fitness = 0
+
     def randomly_generate(self,lb, ub):
         for i in range(self.chromosome_length):
             rand = random.uniform(lb, ub)
@@ -57,7 +62,7 @@ class anIndividual:
     def print_individual(self, i):
         print("Chromosome "+str(i) +": " + str(self.chromosome) + "\nFitness: " + str(self.fitness))
       
-class aSimpleSteadyStateGA:
+class aSimpleEDA:
     def __init__(self, population_size, chromosome_length, mutation_rate, lb, ub, method):
         if (population_size < 2):
             print("Error: Population Size must be greater than 2")
@@ -124,48 +129,50 @@ class aSimpleSteadyStateGA:
         for i in range(int(PopSize/2)):
             newParent = self.binaryTournamentSelection()
             parentList.append(newParent)
-            #print(newParent)
-            #print(self.population[newParent].chromosome)
+
             np_parent_sum = np.add(np_parent_sum, np.array(self.population[newParent].chromosome))
-            #print(newParent)
-            #print(np_parent_sum)
-            # exit(0)
-        # print(np_parent_sum)
-        # print(len(parentList))
+
         np_pdf = np.true_divide(np_parent_sum, len(parentList))
         #print(np_pdf)
-        
-        # for num in range(10):
-        #     rand = random.uniform(0, 1)
-        #     print(rand)
-        #     if rand < np_pdf[0][0]:
-        #         print(1)
+
         kid = self.get_worst_fit_individual()
-        for j in range(self.chromosome_length):
-            rand = random.uniform(0,1)
-            if rand < np_pdf[0][j]:
-                self.population[kid].chromosome[j] = 1 #random.uniform(self.population[mom].chromosome[j],self.population[dad].chromosome[j])
-            else:
-                self.population[kid].chromosome[j] = 0
-            # self.population[kid].chromosome[j] += self.mutation_amt * random.gauss(0,1.0)
-            # if self.population[kid].chromosome[j] > self.ub:
-            #     self.population[kid].chromosome[j] = self.ub
-            # if self.population[kid].chromosome[j] < self.lb:
-            #     self.population[kid].chromosome[j] = self.lb
-            if self.mutation_amt * random.gauss(0,1.0) > 0.5:
-                # self.population[kid].chromosome[j] = 0
-                if self.population[kid].chromosome[j] == 1:
-                    self.population[kid].chromosome[j] = 0
+        offspringNumber = 2
+        offspring = []
+        offspringFitness = []
+        for offspringIter in range(offspringNumber):
+            newOffspring = anIndividual(ChromLength,method)#np.zeros((1,ChromLength), dtype = np.int)[0]
+            newOffspring.assignZero()
+            newOffspring.calculate_fitness()
+            #newOffspring.print_individual(0)
+            for j in range(self.chromosome_length):
+                rand = random.uniform(0, 1)
+                # print('rand = {}, np_pdf = {}'.format(rand, np_pdf[0][j]))
+                if rand < np_pdf[0][j]:
+                    # offspring[offspringIter].chromosome[j] = 1  # random.uniform(self.population[mom].chromosome[j],self.population[dad].chromosome[j])
+                    newOffspring.chromosome[j] = 1
                 else:
-                    self.population[kid].chromosome[j] = 1
+                    newOffspring.chromosome[j] = 0
 
-
-        self.population[kid].calculate_fitness()
-        for i in range(self.chromosome_length):
-
-            self.hacker_tracker_x.append(self.population[kid].chromosome[i])
-        # self.hacker_tracker_y.append(self.population[kid].chromosome[1])
-        self.hacker_tracker_z.append(self.population[kid].fitness)
+                newOffspring.chromosome[j] += self.mutation_amt * random.gauss(0, 1.0)
+                if newOffspring.chromosome[j] > self.ub:
+                    newOffspring.chromosome[j] = self.ub
+                if newOffspring.chromosome[j] < self.lb:
+                    newOffspring.chromosome[j] = self.lb
+                if newOffspring.chromosome[j]<0.5:
+                    newOffspring.chromosome[j] = 0
+                else: newOffspring.chromosome[j] = 1
+            #newOffspring.print_individual(0)
+            newOffspring.calculate_fitness()
+            offspring.append(newOffspring)
+            # exit(0)
+            offspringFitness.append(newOffspring.fitness)
+            #print(len(offspring))
+            #print(offspringFitness)
+            #exit(0)
+        #print('npmax = {}'.format(np.max(offspringFitness)))
+        #print('npmax arg = {}'.format(np.argmax(offspringFitness)))
+        self.population[kid].fitness = np.max(offspringFitness)
+        self.population[kid] = offspring[np.argmax(offspringFitness)]
        
     def print_population(self):
         for i in range(self.population_size):
@@ -178,7 +185,7 @@ class aSimpleSteadyStateGA:
             if self.population[i].fitness > best_fitness:
                 best_fitness = self.population[i].fitness
                 best_individual = i
-        print("Best Individual: ",str(best_individual)," ", self.population[best_individual].chromosome, "\nFitness: ", str(best_fitness))
+        #print("Best Individual: ",str(best_individual)," ", self.population[best_individual].chromosome, "\nFitness: ", str(best_fitness))
         bestIndividualAllRuns.append(self.population[best_individual].chromosome)
         fitnessAllRuns.append(best_fitness)
 
@@ -200,26 +207,12 @@ MaxEvaluations = 4000
 
 plot = 0
 
-#PopSize = 62 # This works
-# PopSize = 41
-# PopSize = 39
-#PopSize = 52
-# mu_amt  = 0.00483
-# mu_amt  = 0.0048304
-# mu_amt = 0.0048312
-# mu_amt = 0.00483035
-#mu_amt = 0.00482932
-# mu_amt = 0.00
-# mu_amt = 0.00082
-# mu_amt = 0.00084
+PopSize = 20
+mu_amt = 0.8
+method = 'mlp'
 
-# PopSize = 53
-# mu_amt = 0.000839
-# method = 'svml'
-
-PopSize = 50
-mu_amt = 0.05
-method = 'svmr'
+if method == 'mlp':
+    MaxEvaluations = 400
 
 maxRun = 10
 bestIndividualAllRuns = []
@@ -234,41 +227,27 @@ f.write('\nmu_amt =  {}'.format(str(mu_amt)))
 f.write('\nmethod =  {}\n'.format(method))
 
 for run in range(maxRun):
-    simple_steadystate_ga = aSimpleSteadyStateGA(PopSize,ChromLength,mu_amt,lb,ub,method)
+    simple_eda = aSimpleEDA(PopSize,ChromLength,mu_amt,lb,ub,method)
 
-    simple_steadystate_ga.generate_initial_population()
-    # simple_steadystate_ga.print_population()
+    simple_eda.generate_initial_population()
 
     for i in range(MaxEvaluations-PopSize+1):
-        simple_steadystate_ga.evolutionary_cycle()
+        simple_eda.evolutionary_cycle()
         if (i % PopSize == 0):
             if (plot == 1):
-                simple_steadystate_ga.plot_evolved_candidate_solutions()
-            #print("At Iteration: " + str(i))
-            # simple_steadystate_ga.print_population()
-        # if (simple_steadystate_ga.get_best_fitness() > 0.997544): #= 0.9975438): #
-        #     break
-
-    # print("\nFinal Population\n")
-    # simple_steadystate_ga.print_population()
-    simple_steadystate_ga.print_best_max_fitness()
-    # print('\n')
-    # print("Function Evaluations: " + str(PopSize+i))
-    # simple_steadystate_ga.plot_evolved_candidate_solutions()
+                simple_eda.plot_evolved_candidate_solutions()
+    #simple_eda.print_best_max_fitness()
 np_fitnessAllRuns = np.array(fitnessAllRuns)
 f.write('\nBest individual in each run - ')
 for ele in bestIndividualAllRuns:
     f.write('\n[')
     f.write(', '.join(str(i) for i in ele))
     f.write(']')
-print(fitnessAllRuns, np.max(np_fitnessAllRuns), np.mean(np_fitnessAllRuns))
 f.write('\n')
 f.write(str(fitnessAllRuns))
 f.write('\nBest fitness over all runs =  {}'.format(str(np.max(np_fitnessAllRuns))))
 f.write('\nMean fitness over all runs = {}'.format(str(np.mean(np_fitnessAllRuns))))
-print('Best individual among all runs is - \n', bestIndividualAllRuns[np_fitnessAllRuns.argmax()])
 f.write('\nBest individual among all runs is - \n')
-# f.write(','.join(str(bestIndividualAllRuns[np_fitnessAllRuns.argmax()])))
 f.write('[')
 f.write(', '.join(str(i) for i in bestIndividualAllRuns[np_fitnessAllRuns.argmax()]))
 f.write(']')
@@ -277,7 +256,6 @@ end_time = datetime.datetime.now()
 
 time_diff = (end_time - start_time)
 execution_time = time_diff.total_seconds()/60.0
-print('\nExecution time = {} minutes'.format(execution_time))
 f.write('\nExecution time = {} minutes'.format(execution_time))
 f.close()
 
