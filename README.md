@@ -12,3 +12,12 @@ URL: http://auburn.edu/
 
 ```
 Max Depth greater than 2 may take a longer time to finish
+
+### Assignment3
+* Developed Steady State Genentic Algorithm (SSGA) and Simple Estimation of Distribution Algorithm (SEDA) for performing feature selection in HTML Malware dataset
+* Steps:
+  * Random population generation
+  * Binary tournament selection
+  * Uniform Crossover (2-Parent) and Mutation
+  * Replace the worst based on fitness
+  * Checked the selected features performance on prediction using ML models (KNN, SVM<sub>L</sub>, SVM<sub>R</sub> and MLP) and ML model's accuracy has been  considered for fitness check
