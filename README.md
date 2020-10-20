@@ -21,3 +21,10 @@ Max Depth greater than 2 may take a longer time to finish
   * Uniform Crossover (2-Parent) and Mutation
   * Replace the worst based on fitness
   * Checked the selected features performance on prediction using ML models (KNN, SVM<sub>L</sub>, SVM<sub>R</sub> and MLP) and ML model's accuracy has been  considered for fitness check
+To run:
+
+```
+python simpleSteadyStateGA.py
+python simpleEDA.py
+
+```
