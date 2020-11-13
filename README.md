@@ -30,3 +30,15 @@ python simpleSteadyStateGA.py
 python simpleEDA.py
 
 ```
+
+### Assignment5
+* Run 4 ML models (KNN, SVM<sub>L</sub>, SVM<sub>R</sub> and MLP) to predict whether a webpage contains malware or not (binary classification)
+* Inspected confusion matrix to deterrmine model with high Type-1 error and Type-2 error
+
+To run:
+
+```
+python HTML_malware.py
+
+```
+
