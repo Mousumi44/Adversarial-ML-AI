@@ -30,6 +30,18 @@ python simpleSteadyStateGA.py
 python simpleEDA.py
 
 ```
+### Assignment4
+* Created 1000-10000 random probes to make an adversarial attack
+* Inspect the accuracy of SVM<sub>R</sub> model which was trained on actual data
+* Model gives around 30% accuracy for generated data
+
+To run:
+
+```
+python RandomProbes.py
+python pj4_SEDA.py 
+
+```
 
 ### Assignment5
 * Run 4 ML models (KNN, SVM<sub>L</sub>, SVM<sub>R</sub> and MLP) to predict whether a webpage contains malware or not (binary classification)
